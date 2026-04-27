@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Risk Dashboard</title>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 56">
+  <rect width="80" height="56" fill="#0f1117"/>
+  <rect x="8" y="8" width="18" height="10" rx="2" fill="#f04e4e" opacity="0.8"/>
+  <rect x="30" y="8" width="18" height="10" rx="2" fill="#f5853a" opacity="0.8"/>
+  <rect x="52" y="8" width="20" height="10" rx="2" fill="#34c98a" opacity="0.8"/>
+  <rect x="8" y="22" width="64" height="3" rx="1" fill="#262a3a"/>
+  <rect x="8" y="28" width="64" height="3" rx="1" fill="#7b8cde" opacity="0.6"/>
+  <rect x="8" y="34" width="64" height="3" rx="1" fill="#262a3a"/>
+  <rect x="8" y="40" width="40" height="3" rx="1" fill="#262a3a"/>
+</svg>
+</template>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f1117;--surface:#181b26;--surface2:#1e2130;--border:#262a3a;
+    --text:#e8eaf0;--muted:#6b7290;--muted2:#3d4260;
+    --critical:#f04e4e;--high:#f5853a;--medium:#f5c842;--low:#34c98a;
+    --accent:#7b8cde;--accent2:#5bc4d4;
+    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  }
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:var(--surface)}
+  ::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:3px}
+  #root{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+</style>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 80 56" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="56" fill="#0f1117"/>
+  <rect x="8" y="8" width="18" height="12" rx="2" fill="#f04e4e" opacity="0.8"/>
+  <rect x="30" y="8" width="18" height="12" rx="2" fill="#f5853a" opacity="0.8"/>
+  <rect x="52" y="8" width="20" height="12" rx="2" fill="#34c98a" opacity="0.8"/>
+  <rect x="8" y="24" width="64" height="4" rx="1" fill="#262a3a"/>
+  <rect x="8" y="24" width="40" height="4" rx="1" fill="#7b8cde" opacity="0.6"/>
+  <rect x="8" y="32" width="64" height="3" rx="1" fill="#262a3a"/>
+  <rect x="8" y="32" width="55" height="3" rx="1" fill="#f04e4e" opacity="0.5"/>
+  <rect x="8" y="39" width="64" height="3" rx="1" fill="#262a3a"/>
+  <rect x="8" y="39" width="30" height="3" rx="1" fill="#34c98a" opacity="0.5"/>
+  <rect x="8" y="46" width="64" height="3" rx="1" fill="#262a3a"/>
+  <rect x="8" y="46" width="48" height="3" rx="1" fill="#f5853a" opacity="0.5"/>
+</svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+// ── DATA GENERATION ────────────────────────────────────────────────
+const COMMODITIES = ['PCB Assembly','Passive Components','ICs & Semiconductors','Mechanical Fasteners','Cables & Harnesses','Display Modules','Power Supplies','Enclosures','Sensors','Connectors','Memory Modules','Thermal Solutions'];
+const REGIONS = ['East Asia','Southeast Asia','South Asia','Eastern Europe','Western Europe','North America','Mexico','Middle East'];
+const COMPANIES = ['Apex','Nova','Zenith','Vertex','Axiom','Syntek','Orion','Lumex','Pragma','Stratos','Helios','Nexen','Auric','Velox','Primus','Strata','Arkon','Elara','Solum','Trion','Quanta','Vega','Kairos','Nexus','Flux','Altus','Cera','Delphi','Elan','Fora','Gaia','Halo','Iota','Jura','Kova','Lyra','Mira','Nova','Optra','Para'];
+const suffixes = ['Systems','Technologies','Manufacturing','Precision','Components','Electronics','Industries','Solutions','Group','Corp'];
+function rand(min,max){return Math.random()*(max-min)+min}
+function randInt(min,max){return Math.floor(rand(min,max+1))}
+function pick(arr){return arr[randInt(0,arr.length-1)]}
+function seeded(i,scale=100){
+  const s=Math.sin(i*9301+49297)*233280;return ((s-Math.floor(s))*scale);
+}
+
+const NPI_PROGRAMS=['ARIA-X1','BOLT-NX','CORSAIR','DELTA-3','ECHO-7'];
+const ESCALATION_STATUSES=['Open','In Review','Resolved'];
+
+function genSuppliers(){
+  const used=new Set();
+  return Array.from({length:100},(_,i)=>{
+    let name;
+    do{ name=`${pick(COMPANIES)} ${pick(suffixes)}`; }while(used.has(name));
+    used.add(name);
+    const qualityBase=seeded(i*3+1,100);
+    const deliveryBase=seeded(i*7+2,100);
+    const externalBase=seeded(i*13+3,100);
+    // Add some correlation/noise
+    const quality=Math.min(100,Math.max(0,qualityBase+rand(-10,10)));
+    const delivery=Math.min(100,Math.max(0,deliveryBase+rand(-10,10)));
+    const external=Math.min(100,Math.max(0,externalBase+rand(-10,10)));
+    const otd=40+delivery*0.6;
+    const dppm=Math.round((100-quality)*150+rand(0,200));
+    const npiPrograms=Math.random()<0.3?[pick(NPI_PROGRAMS)]:Math.random()<0.1?[pick(NPI_PROGRAMS),pick(NPI_PROGRAMS)]:[];
+    const riskScore=quality*0.35+delivery*0.35+external*0.3; // will be recalculated
+    const tier=riskScore>70?'Critical':riskScore>55?'High':riskScore>38?'Medium':'Low';
+    const escalated=(tier==='Critical'||tier==='High')&&Math.random()<0.6;
+    const months=['Jan','Feb','Mar','Apr','May','Jun'];
+    const trend=months.map((_,mi)=>Math.round(quality+rand(-8,8)));
+    return {
+      id:i+1,name,
+      commodity:pick(COMMODITIES),
+      region:pick(REGIONS),
+      quality:Math.round(quality),
+      delivery:Math.round(delivery),
+      external:Math.round(external),
+      otd:Math.round(otd*10)/10,
+      dppm,
+      riskScore:0,tier,
+      escalated,
+      escalationStatus:escalated?pick(ESCALATION_STATUSES):null,
+      npiPrograms:[...new Set(npiPrograms)],
+      trend,
+      spend:Math.round(rand(0.2,12)*10)/10,
+      activeOrders:randInt(1,24),
+      leadTime:randInt(6,18),
+    };
+  });
+}
+
+const BASE_SUPPLIERS=genSuppliers();
+
+function calcRisk(s,w){
+  // risk score: higher = more risky. quality/delivery are "good" metrics so invert
+  const qRisk=100-s.quality;
+  const dRisk=100-s.delivery;
+  const eRisk=s.external;
+  return Math.round(qRisk*w.quality/100+dRisk*w.delivery/100+eRisk*w.external/100);
+}
+
+function getTier(score){
+  if(score>65)return 'Critical';
+  if(score>48)return 'High';
+  if(score>30)return 'Medium';
+  return 'Low';
+}
+
+const TIER_COLOR={Critical:'var(--critical)',High:'var(--high)',Medium:'var(--medium)',Low:'var(--low)'};
+const TIER_BG={Critical:'rgba(240,78,78,0.12)',High:'rgba(245,133,58,0.12)',Medium:'rgba(245,200,66,0.10)',Low:'rgba(52,201,138,0.10)'};
+
+// ── COMPONENTS ─────────────────────────────────────────────────────
+const {useState,useEffect,useRef,useMemo,useCallback}=React;
+
+function Badge({tier}){
+  return <span style={{
+    padding:'2px 8px',borderRadius:4,fontSize:11,fontWeight:600,letterSpacing:'0.04em',
+    color:TIER_COLOR[tier],background:TIER_BG[tier],
+    border:`1px solid ${TIER_COLOR[tier]}33`
+  }}>{tier}</span>;
+}
+
+function MiniBar({value,max=100,color}){
+  return <div style={{width:'100%',height:4,background:'var(--border)',borderRadius:2,overflow:'hidden'}}>
+    <div style={{width:`${(value/max)*100}%`,height:'100%',background:color,borderRadius:2,transition:'width 0.4s'}}/>
+  </div>;
+}
+
+function ScoreDot({value,invert=false}){
+  const risk=invert?100-value:value;
+  const color=risk>65?'var(--critical)':risk>48?'var(--high)':risk>30?'var(--medium)':'var(--low)';
+  return <span style={{color,fontFamily:'var(--mono)',fontWeight:500}}>{value}</span>;
+}
+
+function KPICard({label,value,sub,color,icon}){
+  return <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:8,padding:'14px 18px',flex:1,minWidth:140}}>
+    <div style={{color:'var(--muted)',fontSize:11,fontWeight:500,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:8}}>{icon} {label}</div>
+    <div style={{fontSize:26,fontWeight:700,color:color||'var(--text)',lineHeight:1}}>{value}</div>
+    {sub&&<div style={{color:'var(--muted)',fontSize:11,marginTop:6}}>{sub}</div>}
+  </div>;
+}
+
+function RiskGauge({score,size=48}){
+  const tier=getTier(score);
+  const color=TIER_COLOR[tier];
+  const pct=score/100;
+  const r=size/2-4;
+  const circ=2*Math.PI*r;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--border)" strokeWidth={3}/>
+    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={3}
+      strokeDasharray={circ} strokeDashoffset={circ*(1-pct)}
+      strokeLinecap="round" transform={`rotate(-90 ${size/2} ${size/2})`}/>
+    <text x={size/2} y={size/2+4} textAnchor="middle" fill={color} fontSize={11} fontWeight="700" fontFamily="var(--mono)">{score}</text>
+  </svg>;
+}
+
+function SparkLine({data,width=80,height=28}){
+  const min=Math.min(...data),max=Math.max(...data),range=max-min||1;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*width},${height-((v-min)/range)*(height-4)-2}`).join(' ');
+  const trend=data[data.length-1]-data[0];
+  const color=trend>=0?'var(--low)':'var(--critical)';
+  return <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <polyline points={pts} fill="none" stroke={color} strokeWidth={1.5} strokeLinejoin="round"/>
+  </svg>;
+}
+
+// ── DETAIL PANEL ───────────────────────────────────────────────────
+function DetailPanel({supplier,weights,onClose,onEscalate}){
+  const aiSummary = useMemo(()=>{
+    if(!supplier) return '';
+    const {name,tier,quality,delivery,external,riskScore,otd,dppm,region,commodity,npiPrograms,leadTime}=supplier;
+    const drivers=[];
+    if(quality<45) drivers.push(`quality score of ${quality} with DPPM at ${dppm.toLocaleString()}`);
+    if(delivery<45) drivers.push(`delivery performance at ${otd}% OTD`);
+    if(external>60) drivers.push(`elevated external risk exposure (${external}/100) in ${region}`);
+    const driverStr=drivers.length?`Primary risk drivers include ${drivers.join(' and ')}.`:`No single dominant risk factor; composite score of ${riskScore} reflects moderate exposure across dimensions.`;
+    const action=tier==='Critical'?`Immediate escalation recommended — engage category manager and initiate dual-sourcing evaluation.`
+      :tier==='High'?`Schedule a supplier business review within 30 days and request corrective action plan.`
+      :tier==='Medium'?`Monitor closely over next quarter; set automated alerts for score degradation.`
+      :`Continue standard monitoring cadence with quarterly scorecard review.`;
+    const npi=npiPrograms.length?` This supplier supports NPI program(s) ${npiPrograms.join(', ')}, increasing program risk.`:'';
+    return `${name} is rated ${tier} risk with a composite score of ${riskScore}/100, sourcing ${commodity} from ${region} with a ${leadTime}-week lead time.${npi} ${driverStr} ${action}`;
+  },[supplier?.id]);
+
+  if(!supplier)return null;
+  const score=supplier.riskScore;
+  const tier=supplier.tier;
+  return <div style={{position:'fixed',top:0,right:0,bottom:0,width:420,background:'var(--surface)',borderLeft:'1px solid var(--border)',zIndex:100,display:'flex',flexDirection:'column',overflowY:'auto'}}>
+    <div style={{padding:'16px 20px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'var(--surface)',zIndex:1}}>
+      <div>
+        <div style={{fontWeight:700,fontSize:15}}>{supplier.name}</div>
+        <div style={{color:'var(--muted)',fontSize:11,marginTop:2}}>{supplier.commodity} · {supplier.region}</div>
+      </div>
+      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+        <Badge tier={tier}/>
+        <button onClick={onClose} style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:18,lineHeight:1,padding:'2px 6px'}}>×</button>
+      </div>
+    </div>
+
+    <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:16}}>
+      {/* Risk gauge row */}
+      <div style={{display:'flex',gap:12,alignItems:'center',background:'var(--surface2)',borderRadius:8,padding:'14px 16px',border:'1px solid var(--border)'}}>
+        <RiskGauge score={score} size={64}/>
+        <div style={{flex:1}}>
+          <div style={{fontSize:11,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.06em'}}>Composite Risk Score</div>
+          <div style={{fontSize:22,fontWeight:700,color:TIER_COLOR[tier],marginTop:2}}>{score}<span style={{fontSize:13,color:'var(--muted)',fontWeight:400}}>/100</span></div>
+          <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>Spend: ${supplier.spend}M · {supplier.activeOrders} active orders</div>
+        </div>
+      </div>
+
+      {/* Score breakdown */}
+      <div style={{background:'var(--surface2)',borderRadius:8,padding:'14px 16px',border:'1px solid var(--border)'}}>
+        <div style={{fontSize:11,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:12}}>Score Breakdown</div>
+        {[
+          {label:'Quality',value:supplier.quality,good:true,sub:`DPPM: ${supplier.dppm}`},
+          {label:'Delivery',value:supplier.delivery,good:true,sub:`OTD: ${supplier.otd}%`},
+          {label:'External Risk',value:supplier.external,good:false,sub:`Lead time: ${supplier.leadTime}wk`},
+        ].map(({label,value,good,sub})=>{
+          const risk=good?100-value:value;
+          const color=risk>65?'var(--critical)':risk>48?'var(--high)':risk>30?'var(--medium)':'var(--low)';
+          return <div key={label} style={{marginBottom:10}}>
+            <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+              <span style={{fontSize:12,color:'var(--text)'}}>{label}</span>
+              <span style={{fontFamily:'var(--mono)',fontSize:12,color}}>{value}</span>
+            </div>
+            <MiniBar value={value} color={color}/>
+            <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>{sub}</div>
+          </div>;
+        })}
+      </div>
+
+      {/* Quality trend */}
+      <div style={{background:'var(--surface2)',borderRadius:8,padding:'14px 16px',border:'1px solid var(--border)'}}>
+        <div style={{fontSize:11,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>Quality Trend (6mo)</div>
+        <SparkLine data={supplier.trend} width={350} height={44}/>
+        <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--muted)',marginTop:4}}>
+          {['Jan','Feb','Mar','Apr','May','Jun'].map(m=><span key={m}>{m}</span>)}
+        </div>
+      </div>
+
+      {/* NPI Programs */}
+      {supplier.npiPrograms.length>0&&<div style={{background:'rgba(123,140,222,0.08)',borderRadius:8,padding:'12px 16px',border:'1px solid rgba(123,140,222,0.2)'}}>
+        <div style={{fontSize:11,color:'var(--accent)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:6}}>NPI Programs at Risk</div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          {supplier.npiPrograms.map(p=><span key={p} style={{background:'rgba(123,140,222,0.15)',color:'var(--accent)',padding:'3px 10px',borderRadius:4,fontSize:12,fontWeight:500}}>{p}</span>)}
+        </div>
+      </div>}
+
+      {/* Escalation */}
+      {supplier.escalated&&<div style={{background:TIER_BG[tier],borderRadius:8,padding:'12px 16px',border:`1px solid ${TIER_COLOR[tier]}33`}}>
+        <div style={{fontSize:11,color:TIER_COLOR[tier],textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:4}}>Escalation Status</div>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontWeight:600,color:TIER_COLOR[tier]}}>{supplier.escalationStatus}</span>
+          {supplier.escalationStatus!=='Resolved'&&<button onClick={()=>onEscalate(supplier.id)} style={{background:TIER_COLOR[tier],border:'none',color:'#fff',padding:'4px 12px',borderRadius:4,fontSize:11,fontWeight:600,cursor:'pointer'}}>
+            {supplier.escalationStatus==='Open'?'Move to Review':'Mark Resolved'}
+          </button>}
+        </div>
+      </div>}
+
+      {/* AI Summary */}
+      <div style={{background:'linear-gradient(135deg,rgba(91,196,212,0.06),rgba(123,140,222,0.06))',borderRadius:8,padding:'14px 16px',border:'1px solid rgba(91,196,212,0.2)'}}>
+        <div style={{fontSize:11,color:'var(--accent2)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:8,display:'flex',alignItems:'center',gap:6}}>
+          <span>✦</span> AI Risk Narrative
+        </div>
+        <div style={{fontSize:12,lineHeight:1.7,color:'var(--text)'}}>{aiSummary}</div>
+      </div>
+    </div>
+  </div>;
+}
+
+// ── Q&A PANEL ──────────────────────────────────────────────────────
+function QAPanel({suppliers,open,onClose}){
+  const [messages,setMessages]=useState([{role:'assistant',content:'Hello! I\'m your supply chain AI analyst. Ask me anything about your supplier risk data — e.g. "Which suppliers in East Asia are Critical risk?" or "Who has the worst delivery scores?"'}]);
+  const [input,setInput]=useState('');
+  const [loading,setLoading]=useState(false);
+  const scrollRef=useRef(null);
+
+  useEffect(()=>{if(scrollRef.current)scrollRef.current.scrollTop=scrollRef.current.scrollHeight;},[messages]);
+
+  const send=async()=>{
+    if(!input.trim()||loading)return;
+    const q=input.trim();setInput('');
+    setMessages(m=>[...m,{role:'user',content:q}]);
+    setLoading(true);
+    // Build context summary
+    const critCount=suppliers.filter(s=>s.tier==='Critical').length;
+    const highCount=suppliers.filter(s=>s.tier==='High').length;
+    const escalated=suppliers.filter(s=>s.escalated);
+    const top5=suppliers.slice(0,5).map(s=>`${s.name} (${s.tier}, risk:${s.riskScore}, ${s.region}, ${s.commodity})`).join('; ');
+    const context=`You are a supply chain AI analyst embedded in a Power BI dashboard. You have data on 100 suppliers scored on quality, delivery, and external risk. Summary: ${critCount} Critical, ${highCount} High, ${suppliers.length-critCount-highCount} Medium/Low risk. Top risky: ${top5}. Escalated: ${escalated.length} suppliers.
+
+Full supplier list (name|tier|riskScore|quality|delivery|external|region|commodity|otd|dppm|spend):
+${suppliers.slice(0,100).map(s=>`${s.name}|${s.tier}|${s.riskScore}|${s.quality}|${s.delivery}|${s.external}|${s.region}|${s.commodity}|${s.otd}|${s.dppm}|${s.spend}M`).join('\n')}
+
+Answer the user's question concisely. Be specific with supplier names and numbers.`;
+    try{
+      const history=[{role:'system',content:context},...messages.map(m=>({role:m.role,content:m.content})),{role:'user',content:q}];
+      const resp=await window.claude.complete({messages:history.filter(m=>m.role!=='system').concat()});
+      // Actually use system differently
+      const resp2=await window.claude.complete(`${context}\n\nUser question: ${q}\n\nAnswer:`);
+      setMessages(m=>[...m,{role:'assistant',content:resp2}]);
+    }catch(e){setMessages(m=>[...m,{role:'assistant',content:'Sorry, I encountered an error. Please try again.'}]);}
+    setLoading(false);
+  };
+
+  if(!open)return null;
+  return <div style={{position:'fixed',bottom:0,right:0,width:380,height:480,background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'12px 12px 0 0',display:'flex',flexDirection:'column',zIndex:200,boxShadow:'0 -8px 32px rgba(0,0,0,0.4)'}}>
+    <div style={{padding:'12px 16px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center',background:'linear-gradient(135deg,rgba(91,196,212,0.08),rgba(123,140,222,0.08))'}}>
+      <div style={{fontSize:13,fontWeight:600,display:'flex',alignItems:'center',gap:8}}><span style={{color:'var(--accent2)'}}>✦</span> AI Analyst Q&A</div>
+      <button onClick={onClose} style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:16}}>×</button>
+    </div>
+    <div ref={scrollRef} style={{flex:1,overflowY:'auto',padding:'12px 16px',display:'flex',flexDirection:'column',gap:10}}>
+      {messages.map((m,i)=><div key={i} style={{display:'flex',justifyContent:m.role==='user'?'flex-end':'flex-start'}}>
+        <div style={{maxWidth:'85%',padding:'8px 12px',borderRadius:m.role==='user'?'12px 12px 4px 12px':'12px 12px 12px 4px',
+          background:m.role==='user'?'var(--accent)':'var(--surface2)',
+          color:m.role==='user'?'#fff':'var(--text)',fontSize:12,lineHeight:1.6,border:'1px solid var(--border)'}}>
+          {m.content}
+        </div>
+      </div>)}
+      {loading&&<div style={{color:'var(--muted)',fontSize:12,fontStyle:'italic',display:'flex',gap:4,alignItems:'center'}}>
+        <span>Analyzing</span><span style={{animation:'dots 1.2s infinite'}}>...</span>
+      </div>}
+    </div>
+    <div style={{padding:'10px 12px',borderTop:'1px solid var(--border)',display:'flex',gap:8}}>
+      <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()}
+        placeholder="Ask about your suppliers..."
+        style={{flex:1,background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:6,padding:'7px 12px',color:'var(--text)',fontSize:12,outline:'none',fontFamily:'var(--font)'}}/>
+      <button onClick={send} disabled={loading||!input.trim()} style={{background:'var(--accent)',border:'none',color:'#fff',borderRadius:6,padding:'7px 14px',fontSize:12,fontWeight:600,cursor:loading?'not-allowed':'pointer',opacity:loading?0.6:1}}>Send</button>
+    </div>
+  </div>;
+}
+
+// ── TWEAKS PANEL ───────────────────────────────────────────────────
+function TweaksPanel({weights,setWeights,open}){
+  if(!open)return null;
+  const total=weights.quality+weights.delivery+weights.external;
+  const update=(key,val)=>{
+    const newW={...weights,[key]:val};
+    setWeights(newW);
+    window.parent.postMessage({type:'__edit_mode_set_keys',edits:{weights:newW}},'*');
+  };
+  return <div style={{position:'fixed',bottom:60,right:16,width:260,background:'var(--surface)',border:'1px solid var(--border)',borderRadius:10,padding:'16px',zIndex:300,boxShadow:'0 8px 32px rgba(0,0,0,0.5)'}}>
+    <div style={{fontSize:12,fontWeight:600,marginBottom:12,color:'var(--accent)'}}>⚙ Risk Score Weights</div>
+    {[{key:'quality',label:'Quality Risk',color:'var(--critical)'},{key:'delivery',label:'Delivery Risk',color:'var(--high)'},{key:'external',label:'External Risk',color:'var(--medium)'}].map(({key,label,color})=><div key={key} style={{marginBottom:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+        <span style={{fontSize:11,color:'var(--muted)'}}>{label}</span>
+        <span style={{fontFamily:'var(--mono)',fontSize:11,color}}>{weights[key]}%</span>
+      </div>
+      <input type="range" min={10} max={80} value={weights[key]} onChange={e=>update(key,+e.target.value)}
+        style={{width:'100%',accentColor:color}}/>
+    </div>)}
+    <div style={{fontSize:10,color:total!==100?'var(--critical)':'var(--muted)',marginTop:4,textAlign:'center'}}>
+      Total: {total}% {total!==100?'(should sum to 100)':'✓'}
+    </div>
+  </div>;
+}
+
+// ── ESCALATION QUEUE ───────────────────────────────────────────────
+function EscalationQueue({suppliers,onSelect,onEscalate}){
+  const esc=suppliers.filter(s=>s.escalated&&s.escalationStatus!=='Resolved');
+  const [filter,setFilter]=useState('All');
+  const filtered=filter==='All'?esc:esc.filter(s=>s.escalationStatus===filter);
+  return <div style={{display:'flex',flexDirection:'column',gap:0,height:'100%'}}>
+    <div style={{padding:'10px 16px',borderBottom:'1px solid var(--border)',display:'flex',gap:8,alignItems:'center'}}>
+      {['All','Open','In Review'].map(f=><button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?'var(--accent)':'none',border:filter===f?'none':'1px solid var(--border)',color:filter===f?'#fff':'var(--muted)',borderRadius:4,padding:'3px 10px',fontSize:11,cursor:'pointer',fontFamily:'var(--font)'}}>{f}</button>)}
+      <span style={{marginLeft:'auto',color:'var(--muted)',fontSize:11}}>{filtered.length} items</span>
+    </div>
+    <div style={{flex:1,overflowY:'auto'}}>
+      {filtered.map(s=><div key={s.id} onClick={()=>onSelect(s)} style={{padding:'12px 16px',borderBottom:'1px solid var(--border)',cursor:'pointer',display:'flex',gap:12,alignItems:'center',transition:'background 0.15s'}}
+        onMouseEnter={e=>e.currentTarget.style.background='var(--surface2)'}
+        onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+        <RiskGauge score={s.riskScore} size={40}/>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontWeight:600,fontSize:12,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{s.name}</div>
+          <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>{s.commodity} · {s.region}</div>
+          {s.npiPrograms.length>0&&<div style={{fontSize:10,color:'var(--accent)',marginTop:2}}>{s.npiPrograms.join(', ')}</div>}
+        </div>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+          <Badge tier={s.tier}/>
+          <span style={{fontSize:10,padding:'2px 7px',borderRadius:3,background:'var(--surface2)',color:'var(--muted)',border:'1px solid var(--border)'}}>{s.escalationStatus}</span>
+        </div>
+      </div>)}
+      {filtered.length===0&&<div style={{padding:32,textAlign:'center',color:'var(--muted)',fontSize:12}}>No escalations in this status</div>}
+    </div>
+  </div>;
+}
+
+// ── MAIN APP ───────────────────────────────────────────────────────
+function App(){
+  const [weights,setWeights]=useState(()=>{
+    const TWEAK_DEFAULTS=/*EDITMODE-BEGIN*/{
+      "quality": 35,
+      "delivery": 35,
+      "external": 30,
+      "weights": {
+        "quality": 62,
+        "delivery": 35,
+        "external": 30,
+        "weights": {
+          "quality": 26,
+          "delivery": 35,
+          "external": 30,
+          "weights": {
+            "quality": 25,
+            "delivery": 35,
+            "external": 30,
+            "weights": {
+              "quality": 35,
+              "delivery": 35,
+              "external": 27,
+              "weights": {
+                "quality": 35,
+                "delivery": 37,
+                "external": 30,
+                "weights": {
+                  "quality": 36,
+                  "delivery": 35,
+                  "external": 30
+                }
+              }
+            }
+          }
+        }
+      }
+    }/*EDITMODE-END*/;
+    return TWEAK_DEFAULTS;
+  });
+  const [search,setSearch]=useState('');
+  const [tierFilter,setTierFilter]=useState('All');
+  const [regionFilter,setRegionFilter]=useState('All');
+  const [sortKey,setSortKey]=useState('riskScore');
+  const [sortDir,setSortDir]=useState('desc');
+  const [selected,setSelected]=useState(null);
+  const [activeTab,setActiveTab]=useState('table');
+  const [qaOpen,setQaOpen]=useState(false);
+  const [tweaksOpen,setTweaksOpen]=useState(false);
+  const [suppliers,setSuppliers]=useState([]);
+
+  useEffect(()=>{
+    window.addEventListener('message',e=>{
+      if(e.data?.type==='__activate_edit_mode')setTweaksOpen(true);
+      if(e.data?.type==='__deactivate_edit_mode')setTweaksOpen(false);
+    });
+    window.parent.postMessage({type:'__edit_mode_available'},'*');
+  },[]);
+
+  // Compute risk scores with current weights
+  useEffect(()=>{
+    const total=weights.quality+weights.delivery+weights.external||100;
+    const w={quality:weights.quality/total*100,delivery:weights.delivery/total*100,external:weights.external/total*100};
+    const updated=BASE_SUPPLIERS.map(s=>({...s,riskScore:calcRisk(s,w),tier:getTier(calcRisk(s,w))}));
+    setSuppliers(updated);
+  },[weights]);
+
+  const filtered=useMemo(()=>{
+    let r=suppliers;
+    if(search)r=r.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())||s.commodity.toLowerCase().includes(search.toLowerCase()));
+    if(tierFilter!=='All')r=r.filter(s=>s.tier===tierFilter);
+    if(regionFilter!=='All')r=r.filter(s=>s.region===regionFilter);
+    r=[...r].sort((a,b)=>{
+      const av=a[sortKey],bv=b[sortKey];
+      return sortDir==='desc'?(bv>av?1:-1):(av>bv?1:-1);
+    });
+    return r;
+  },[suppliers,search,tierFilter,regionFilter,sortKey,sortDir]);
+
+  const escalateNext=useCallback((id)=>{
+    setSuppliers(prev=>prev.map(s=>{
+      if(s.id!==id)return s;
+      const next=s.escalationStatus==='Open'?'In Review':'Resolved';
+      return {...s,escalationStatus:next};
+    }));
+  },[]);
+
+  const stats=useMemo(()=>({
+    critical:suppliers.filter(s=>s.tier==='Critical').length,
+    high:suppliers.filter(s=>s.tier==='High').length,
+    escalated:suppliers.filter(s=>s.escalated&&s.escalationStatus!=='Resolved').length,
+    avgRisk:suppliers.length?Math.round(suppliers.reduce((a,s)=>a+s.riskScore,0)/suppliers.length):0,
+  }),[suppliers]);
+
+  const regions=[...new Set(BASE_SUPPLIERS.map(s=>s.region))].sort();
+  const handleSort=(key)=>{if(sortKey===key)setSortDir(d=>d==='asc'?'desc':'asc');else{setSortKey(key);setSortDir('desc');}};
+  const SortIcon=({k})=>sortKey===k?<span style={{color:'var(--accent)',marginLeft:2}}>{sortDir==='desc'?'↓':'↑'}</span>:<span style={{color:'var(--muted2)',marginLeft:2,fontSize:9}}>↕</span>;
+
+  const col={padding:'8px 12px',borderBottom:'1px solid var(--border)',fontSize:12,whiteSpace:'nowrap'};
+  const hcol={...col,fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.05em',cursor:'pointer',userSelect:'none',fontWeight:600,background:'var(--surface)'};
+
+  return <div style={{display:'flex',flexDirection:'column',height:'100vh',overflow:'hidden'}}>
+    {/* Header */}
+    <div style={{padding:'10px 20px',borderBottom:'1px solid var(--border)',background:'var(--surface)',display:'flex',alignItems:'center',gap:16,flexShrink:0}}>
+      <div>
+        <div style={{fontWeight:700,fontSize:15,letterSpacing:'-0.01em'}}>Supplier Risk Dashboard</div>
+        <div style={{fontSize:10,color:'var(--muted)',marginTop:1}}>NPI Program Management · 100 Suppliers · Updated Apr 25, 2026</div>
+      </div>
+      <div style={{marginLeft:'auto',display:'flex',gap:8,alignItems:'center'}}>
+
+        <button onClick={()=>{setTweaksOpen(t=>!t);window.parent.postMessage({type:tweaksOpen?'__edit_mode_dismissed':'__edit_mode_available'},'*');}} style={{background:'var(--surface2)',border:'1px solid var(--border)',color:'var(--muted)',borderRadius:6,padding:'5px 12px',fontSize:11,cursor:'pointer',fontFamily:'var(--font)'}}>
+          ⚙ Weights
+        </button>
+      </div>
+    </div>
+
+    {/* KPI Strip */}
+    <div style={{padding:'10px 20px',display:'flex',gap:10,borderBottom:'1px solid var(--border)',flexShrink:0,background:'var(--bg)'}}>
+      <KPICard label="Critical Suppliers" value={stats.critical} sub={`${Math.round(stats.critical)}% of portfolio`} color="var(--critical)"/>
+      <KPICard label="High Risk" value={stats.high} sub="Requires monitoring" color="var(--high)"/>
+      <KPICard label="Open Escalations" value={stats.escalated} sub="Pending action" color="var(--medium)"/>
+      <KPICard label="Avg Risk Score" value={stats.avgRisk} sub="Portfolio average" color={stats.avgRisk>50?'var(--high)':'var(--low)'}/>
+      <KPICard label="Total Suppliers" value={suppliers.length} sub={`${regions.length} regions`} color="var(--accent)"/>
+    </div>
+
+    {/* Tab bar */}
+    <div style={{display:'flex',gap:0,padding:'0 20px',borderBottom:'1px solid var(--border)',background:'var(--surface)',flexShrink:0}}>
+      {[['table','Risk Leaderboard'],['escalation','Escalation Queue']].map(([id,label])=><button key={id} onClick={()=>setActiveTab(id)} style={{background:'none',border:'none',borderBottom:`2px solid ${activeTab===id?'var(--accent)':'transparent'}`,color:activeTab===id?'var(--text)':'var(--muted)',padding:'10px 16px',fontSize:12,fontWeight:activeTab===id?600:400,cursor:'pointer',fontFamily:'var(--font)',marginBottom:-1,transition:'color 0.15s'}}>
+        {label}
+        {id==='escalation'&&stats.escalated>0&&<span style={{marginLeft:6,background:'var(--high)',color:'#fff',borderRadius:10,padding:'1px 6px',fontSize:10,fontWeight:700}}>{stats.escalated}</span>}
+      </button>)}
+    </div>
+
+    {/* Main content */}
+    <div style={{flex:1,overflow:'hidden',display:'flex',position:'relative'}}>
+      {activeTab==='table'&&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+        {/* Filters */}
+        <div style={{padding:'10px 20px',display:'flex',gap:8,alignItems:'center',borderBottom:'1px solid var(--border)',background:'var(--bg)',flexShrink:0}}>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search suppliers or commodities..."
+            style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:6,padding:'6px 12px',color:'var(--text)',fontSize:12,outline:'none',width:220,fontFamily:'var(--font)'}}/>
+          <select value={tierFilter} onChange={e=>setTierFilter(e.target.value)} style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:6,padding:'6px 10px',color:'var(--text)',fontSize:12,outline:'none',fontFamily:'var(--font)'}}>
+            <option>All</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+          </select>
+          <select value={regionFilter} onChange={e=>setRegionFilter(e.target.value)} style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:6,padding:'6px 10px',color:'var(--text)',fontSize:12,outline:'none',fontFamily:'var(--font)'}}>
+            <option>All</option>{regions.map(r=><option key={r}>{r}</option>)}
+          </select>
+          <span style={{color:'var(--muted)',fontSize:11,marginLeft:'auto'}}>{filtered.length} suppliers</span>
+        </div>
+        {/* Table */}
+        <div style={{flex:1,overflowY:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead style={{position:'sticky',top:0,zIndex:2}}>
+              <tr>
+                {[['name','Supplier'],['tier','Tier'],['riskScore','Risk Score'],['quality','Quality'],['delivery','Delivery'],['external','Ext Risk'],['otd','OTD %'],['dppm','DPPM'],['region','Region'],['spend','Spend $M'],['trend','Trend']].map(([k,l])=>(
+                  <th key={k} onClick={()=>k!=='trend'&&handleSort(k)} style={{...hcol,textAlign:'left',cursor:k==='trend'?'default':'pointer'}}>
+                    {l}{k!=='trend'&&<SortIcon k={k}/>}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(s=><tr key={s.id} onClick={()=>setSelected(s)} style={{cursor:'pointer',transition:'background 0.1s'}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--surface2)'}
+                onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+                <td style={{...col,fontWeight:500,maxWidth:160,overflow:'hidden',textOverflow:'ellipsis'}}>
+                  <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                    {s.escalated&&s.escalationStatus!=='Resolved'&&<span title="Escalated" style={{color:'var(--high)',fontSize:10}}>⚑</span>}
+                    {s.name}
+                  </div>
+                  <div style={{fontSize:10,color:'var(--muted)',marginTop:1}}>{s.commodity}</div>
+                </td>
+                <td style={col}><Badge tier={s.tier}/></td>
+                <td style={col}><div style={{display:'flex',gap:8,alignItems:'center'}}><RiskGauge score={s.riskScore} size={32}/></div></td>
+                <td style={col}><ScoreDot value={s.quality} invert={true}/><div style={{marginTop:3,width:60}}><MiniBar value={s.quality} color={s.quality<40?'var(--critical)':s.quality<60?'var(--high)':'var(--low)'}/></div></td>
+                <td style={col}><ScoreDot value={s.delivery} invert={true}/><div style={{marginTop:3,width:60}}><MiniBar value={s.delivery} color={s.delivery<40?'var(--critical)':s.delivery<60?'var(--high)':'var(--low)'}/></div></td>
+                <td style={col}><ScoreDot value={s.external} invert={false}/><div style={{marginTop:3,width:60}}><MiniBar value={s.external} color={s.external>65?'var(--critical)':s.external>48?'var(--high)':s.external>30?'var(--medium)':'var(--low)'}/></div></td>
+                <td style={{...col,fontFamily:'var(--mono)',color:s.otd<70?'var(--critical)':s.otd<85?'var(--high)':'var(--low)'}}>{s.otd}%</td>
+                <td style={{...col,fontFamily:'var(--mono)',color:s.dppm>5000?'var(--critical)':s.dppm>2000?'var(--high)':'var(--low)'}}>{s.dppm.toLocaleString()}</td>
+                <td style={{...col,color:'var(--muted)',fontSize:11}}>{s.region}</td>
+                <td style={{...col,fontFamily:'var(--mono)',color:'var(--accent)'}}>${s.spend}M</td>
+                <td style={col}><SparkLine data={s.trend}/></td>
+              </tr>)}
+            </tbody>
+          </table>
+        </div>
+      </div>}
+
+      {activeTab==='escalation'&&<div style={{flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <EscalationQueue suppliers={suppliers} onSelect={setSelected} onEscalate={escalateNext}/>
+      </div>}
+
+      {selected&&<DetailPanel supplier={selected} weights={weights} onClose={()=>setSelected(null)} onEscalate={escalateNext}/>}
+    </div>
+
+
+    <TweaksPanel weights={weights} setWeights={setWeights} open={tweaksOpen}/>
+
+    <style>{`
+      @keyframes dots{0%,80%,100%{opacity:0}40%{opacity:1}}
+      input[type=range]{cursor:pointer;height:4px}
+      th:hover{color:var(--text)!important}
+    `}</style>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
