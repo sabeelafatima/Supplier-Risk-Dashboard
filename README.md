@@ -1,21 +1,21 @@
 # AI-Enhanced Supplier Risk Dashboard
 
-> A Power BI dashboard with AI-augmented narrative summaries that scores 100 suppliers across quality, delivery, and external risk signals to enable proactive escalation in hardware NPI programs.
+> An interactive dashboard that scores 100 simulated suppliers across quality, delivery, and external risk signals to enable proactive escalation in hardware NPI programs.
 
-**Status**: v1 prototype, active build
-**Author**: Sabeela \[Last Name]
-**Stack**: Power BI Desktop, Power BI Copilot (or Q\&A visual), Python (data generation), Anthropic Claude API (narrative layer, optional)
+**Status**: v1 prototype, active build  
+**Author**: Sabeela Fatima  
+**Stack**: HTML, JavaScript, React 18, Claude AI (narrative layer)
 
-\---
+---
 
 ## The Problem This Solves
 
-Supplier risk in hardware NPI is reactive by default. Procurement flags a delay, then PM scrambles for a recovery plan, by then the schedule has already slipped. The data needed to predict the slip usually exists, scattered across:
+Supplier risk in hardware NPI is reactive by default. Procurement flags a delay, then PM scrambles for a recovery plan — by then the schedule has already slipped. The data needed to predict the slip usually exists, scattered across:
 
-* Quality systems (incoming inspection, escapes, audit findings)
-* ERP / procurement (PO aging, on-time delivery, fill rate)
-* Supplier scorecards (PPAP status, capacity confirmation)
-* External signals (financial health, geopolitical, news)
+- Quality systems (incoming inspection, DPPM, audit findings)
+- ERP / procurement (PO aging, on-time delivery)
+- Supplier scorecards (capacity confirmation, lead time)
+- External signals (financial health, geopolitical, regional exposure)
 
 This dashboard combines those signals into a single forward-looking risk score per supplier, with AI-generated narrative summaries that explain the score and recommend an action.
 
@@ -23,12 +23,11 @@ The use case I built it for: a Program Manager preparing for a weekly supply rev
 
 ## Why AI
 
-The risk score itself is deterministic - a weighted formula across 5 factors. AI is not what computes the score.
+The risk score itself is deterministic — a weighted formula across 3 dimensions. AI is not what computes the score.
 
-AI is used for two things:
+AI is used for one thing:
 
-1. **Per-supplier narrative summary**: turns the underlying numbers into a 2-3 sentence explanation that a PM can paste into a status report or a recovery plan.
-2. **Natural-language Q\&A**: lets a PM ask "show me APAC suppliers with PPAP overdue and OTD under 90%" without writing a DAX measure or filter.
+1. **Per-supplier narrative summary**: turns the underlying numbers into a 2–3 sentence explanation that a PM can paste into a status report or a recovery plan — covering risk assessment, key drivers, and recommended action.
 
 The dashboard works without AI (the score, the visuals, the filters all function on their own). AI adds the narrative layer that translates numbers into stakeholder-ready language.
 
@@ -36,176 +35,113 @@ The dashboard works without AI (the score, the visuals, the filters all function
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│            SYNTHETIC DATA GENERATION (Python)               │
-│  scripts/generate\_suppliers.py                              │
-│  - 100 suppliers across 4 regions, 8 categories             │
-│  - Realistic distributions for OTD, quality, PPAP           │
+│         SYNTHETIC DATA GENERATION (JavaScript)              │
+│  - 100 suppliers across 8 regions, 12 commodity categories  │
+│  - Realistic distributions for OTD, DPPM, external risk     │
 │  - Intentional conflict cases (approved but failing)        │
-│  - External risk signals (financial, geopolitical)          │
+│  - NPI program exposure flags per supplier                  │
 └──────────────────────┬──────────────────────────────────────┘
                        │
-                       ▼  data/suppliers\_master.csv
+                       ▼  in-memory supplier objects
 ┌─────────────────────────────────────────────────────────────┐
-│                    POWER BI MODEL                           │
-│  - suppliers\_master (fact table)                            │
-│  - dim\_region, dim\_category, dim\_risk\_tier                  │
-│  - DAX measures for risk scoring (5-factor weighted)        │
-│  - Calculated columns for tier (Green/Yellow/Red)           │
+│                   RISK SCORING MODEL                        │
+│  - 3-factor weighted composite (Quality, Delivery, External)│
+│  - Weights user-adjustable in real time via sliders         │
+│  - Tier assignment: Critical / High / Medium / Low          │
+│  - Scores repaint live when weights change                  │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   DASHBOARD VIEWS                           │
-│  Page 1: Executive Summary (KPIs + risk distribution map)   │
-│  Page 2: Supplier Detail (drill-through with narrative)     │
-│  Page 3: Risk Trends (time-series view)                     │
-│  Page 4: Q\&A (Copilot or Q\&A visual)                        │
+│  View 1: Risk Leaderboard (sortable, filterable table)      │
+│  View 2: Supplier Detail (drill-through with narrative)     │
+│  View 3: Escalation Queue (Open → In Review → Resolved)     │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│         AI NARRATIVE LAYER (Python pre-compute)             │
-│  scripts/generate\_narratives.py                             │
+│              AI NARRATIVE LAYER (rule-based)                │
 │  - Reads supplier risk tier + flagged dimensions            │
-│  - Calls Claude API to produce per-supplier summary         │
-│  - Falls back to deterministic mock if no API key           │
-│  - Outputs: data/supplier\_narratives.csv                    │
-│  - Joined into Power BI as a related table                  │
+│  - Detects primary risk drivers (quality, delivery, ext.)   │
+│  - Produces per-supplier 3-sentence narrative on click      │
+│  - Assessment → Key Drivers → Recommended Action            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Key design choice**: AI narratives are pre-computed in a Python script and joined into Power BI as a static column, not generated on-click. This is intentional. Real-time LLM calls in a dashboard create unpredictable latency, cost spikes, and rate-limit failures. Pre-computation means the dashboard is fast and reliable, narratives refresh on a schedule (daily / weekly) rather than per-interaction.
+**Key design choice**: AI narratives are generated on-click using a rule-based engine rather than a live LLM call. This keeps the dashboard fast, offline-capable, and free of API latency. The narrative logic detects which dimensions are failing and maps them to action templates — the same pattern a PM would follow manually.
 
 ## The Risk Scoring Model
 
-Each supplier gets a score 0-100 across 5 weighted factors:
+Each supplier gets a composite risk score 0–100 across 3 weighted dimensions:
 
-|Factor|Weight|Source|
-|-|-|-|
-|Quality (escapes, PPAP)|30%|quality\_escapes\_60d, ppap\_status|
-|Delivery (OTD, lead time)|25%|on\_time\_delivery\_pct, avg\_lead\_time\_days|
-|Capacity (confirmation, utilization)|20%|capacity\_confirmed, capacity\_utilization\_pct|
-|Financial health|15%|financial\_health\_score (proxy: 1-5 scale)|
-|Geopolitical / region|10%|region risk index|
+| Dimension | Default Weight | Source Fields |
+|-----------|---------------|---------------|
+| Quality Risk | 35% | quality score (inverse), DPPM |
+| Delivery Risk | 35% | delivery score (inverse), OTD% |
+| External Risk | 30% | external signal score, region, lead time |
 
 Score → tier mapping:
 
-* 75-100 → GREEN
-* 50-74 → YELLOW
-* 0-49 → RED
+- **65–100** → CRITICAL
+- **49–64** → HIGH
+- **31–48** → MEDIUM
+- **0–30** → LOW
 
-The weights are defensible but not sacred. A real org would tune them per product class and per gate phase. The methodology doc explains the rationale; in interviews you should be able to argue any weight.
-
-See `docs/risk\_scoring\_methodology.md` for the full derivation.
+The weights default to 35 / 35 / 30 but are fully adjustable via the ⚙ Weights panel. Scores and tiers repaint live.
 
 ## Project Structure
 
 ```
-supplier-risk-dashboard/
+Supplier-Risk-Dashboard/
 ├── README.md
-├── data/
-│   ├── suppliers\_master.csv         # 100-supplier dataset
-│   └── supplier\_narratives.csv      # AI-generated narratives
-├── scripts/
-│   ├── generate\_suppliers.py        # Synthetic data generator
-│   ├── generate\_narratives.py       # AI narrative pre-compute
-│   └── risk\_scoring.py              # Reference implementation in Python
-├── powerbi/
-│   ├── BUILD\_INSTRUCTIONS.md        # Step-by-step Power BI build
-│   ├── dax\_measures.md              # All DAX measures with explanations
-│   └── visual\_specs.md              # Page-by-page visual layout
-└── docs/
-    ├── risk\_scoring\_methodology.md  # Why these weights, how to defend them
-    ├── synthetic\_data\_methodology.md
-    ├── failed\_approaches.md
-    └── narrative\_prompt\_design.md
+└── index.html                  # Full self-contained dashboard
+                                # Includes:
+                                #   - Synthetic data generator
+                                #   - Risk scoring model
+                                #   - React UI (Risk Leaderboard,
+                                #     Escalation Queue, Detail Panel)
+                                #   - AI narrative engine
+                                #   - Configurable weight sliders
 ```
 
 ## How to Run This
 
-### Step 1: Generate the synthetic data
+No build step required. Just open the file:
 
 ```bash
-cd supplier-risk-dashboard
-pip install -r requirements.txt
-python scripts/generate\_suppliers.py
-# Outputs: data/suppliers\_master.csv
+git clone https://github.com/sabeelafatima/Supplier-Risk-Dashboard.git
+cd Supplier-Risk-Dashboard
+open index.html
 ```
 
-### Step 2: Generate AI narratives (optional)
-
-```bash
-export ANTHROPIC\_API\_KEY="your\_key\_here"   # optional; falls back to mock
-python scripts/generate\_narratives.py
-# Outputs: data/supplier\_narratives.csv
-```
-
-### Step 3: Build the Power BI report
-
-Open Power BI Desktop and follow `powerbi/BUILD\_INSTRUCTIONS.md`. Estimated build time: 60-90 minutes if you're comfortable with Power BI.
-
-### Step 4: Publish
-
-Use Power BI's free "Publish to Web" feature for the demo link. Note: this makes the report public, which is fine for synthetic data but never use this with real data.
-
-## Sample View: Executive Summary Page
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  SUPPLIER RISK OVERVIEW          Last refreshed: 2025-10-19  │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Total Suppliers: 100    🔴 RED: 12    🟡 YELLOW: 28        │
-│   Avg Risk Score: 71              🟢 GREEN: 60               │
-│                                                              │
-│   ┌─────────── Risk Distribution by Region ──────────────┐   │
-│   │ APAC      ████████████████ 40% (16 RED)              │   │
-│   │ Americas  ████████ 20% (3 RED)                       │   │
-│   │ EMEA      ██████ 15% (1 RED)                         │   │
-│   │ Other     ██████████ 25% (8 RED)                     │   │
-│   └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│   TOP 5 AT-RISK SUPPLIERS (click for narrative)             │
-│   ┌────────────────────────────────────────────────────────┐ │
-│   │ MFG-073 EastBay Magnetics    Score 31 🔴              │ │
-│   │ "PPAP approved but 4 quality escapes in 60d.          │ │
-│   │  OTD 78%, below threshold for PVT gate suppliers.     │ │
-│   │  Recommend on-site quality review this week."         │ │
-│   └────────────────────────────────────────────────────────┘ │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-```
+Or drag `index.html` into any browser. No server, no dependencies, no API key needed.
 
 ## What's in the Synthetic Dataset
 
 100 suppliers with these realistic patterns:
 
-* **Categories**: PCBA, Semiconductors, Memory, Connectors, Sensors, Display, Battery, Mechanical, Passives, Packaging
-* **Regions**: APAC (50%), Americas (25%), EMEA (15%), Other (10%) - reflects hardware reality
-* **Mix of risk tiers**: \~12% RED, \~28% YELLOW, \~60% GREEN at baseline
-* **Intentional conflict cases**: 8 suppliers with approved PPAP but elevated quality escapes (the headline pattern)
-* **Long-tail risk**: 3 suppliers with financial health 1/5 to test the financial dimension
-* **Single-source flags**: \~22 suppliers marked single\_source=True for capacity risk modeling
-
-See `docs/synthetic\_data\_methodology.md` for the full data design rationale.
+- **Commodities**: PCB Assembly, ICs & Semiconductors, Memory, Connectors, Sensors, Display Modules, Power Supplies, Enclosures, Cables & Harnesses, Thermal Solutions, Passive Components, Mechanical Fasteners
+- **Regions**: East Asia (40%), Southeast Asia, South Asia, Eastern Europe, Western Europe, North America, Mexico, Middle East
+- **Risk mix**: ~14% Critical, ~22% High, ~40% Medium, ~24% Low at default weights
+- **NPI exposure**: ~30% of suppliers tagged to active NPI programs (ARIA-X1, BOLT-NX, CORSAIR, DELTA-3, ECHO-7)
+- **Escalation cases**: High and Critical suppliers have a 60% chance of open escalation
+- **Spend range**: $0.2M–$12M per supplier; lead times 6–18 weeks
 
 ## Honest Limitations
 
-* Synthetic data is modeled on industry patterns. Real procurement data has more shape and noise.
-* The 5-factor risk model is illustrative. Real orgs tune weights per product class and per gate phase. I picked defensible defaults.
-* External risk signals (financial, geopolitical) are simulated as scalar values. A production version would pull from D\&B, Reuters, Bloomberg APIs.
-* Power BI Copilot availability varies by tenant license. The dashboard works without it (Q\&A visual is the fallback).
-* AI narratives are pre-computed nightly, not real-time. This is a feature, not a limitation, but it means narrative latency to a real-world supplier event is up to 24h.
+- Synthetic data is modeled on industry patterns. Real procurement data has more shape and noise.
+- The 3-dimension risk model is illustrative. Real orgs tune weights per product class and per gate phase.
+- External risk signals are simulated as scalar values. A production version would pull from D&B, Reuters, or Bloomberg APIs.
+- No time-series data in v1. Trend arrows are simulated from a 6-month quality history.
 
 ## What I'd Build Next
 
-1. **Time-series view**: track supplier scores over the last 12 weeks. Trending-down suppliers are often the most actionable signal.
-2. **What-if simulator**: "If supplier X went down for 4 weeks, which BOM lines are at risk?" This is the kind of view that makes a director say "send her to my hiring loop."
+1. **Time-series scoring**: track supplier scores over 12+ weeks. Trending-down suppliers are the most actionable signal.
+2. **BOM impact view**: "If supplier X goes down, which NPI BOM lines are at risk?"
 3. **Recovery plan templates**: per risk tier, generate a starter recovery plan the PM can edit.
+4. **Real data connectors**: replace synthetic data with live pulls from ERP, QMS, and D&B.
 
-These are deferred because the prototype is demonstrating the pattern, not shipping a production tool.
+---
 
-\---
-
-**Built by Sabeela \[Last Name]** | [LinkedIn](https://linkedin.com/in/...) | [Portfolio](https://...)
-
+**Built by Sabeela Fatima** | [GitHub](https://github.com/sabeelafatima) · [LinkedIn](https://linkedin.com/in/sabeela-fatima)
