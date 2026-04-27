@@ -1,0 +1,101 @@
+supplier_id,narrative,recommended_action,confidence
+MFG-000,Pacific Solutions is healthy (score 83.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-001,Atlas Tech is healthy (score 77.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-002,Volta Systems is healthy (score 81.7). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-003,Nexus Ltd is healthy (score 88.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-004,Memex Works is healthy (score 82.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-005,"Sensorium Components is in CONDITIONAL status (score 65.8). Concerns in capacity; OTD 91.8%, 3 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-006,"EastBay Manufacturing is in CONDITIONAL status (score 63.8). Concerns in capacity; OTD 92.9%, 1 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-007,"Precision Group is in CONDITIONAL status (score 73.8). No single dimension at red, but several are below threshold. OTD 82.4%, 3 escapes in 60d. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-008,DisplayWorks Partners is healthy (score 82.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-009,"PowerCell Industries is in CONDITIONAL status (score 64.7). No single dimension at red, but several are below threshold. OTD 93.5%, 2 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-010,"FormFlex Corp is in CONDITIONAL status (score 69.8). No single dimension at red, but several are below threshold. OTD 88.6%, 4 escapes in 60d. NOTE: PPAP approved but 4 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-011,LabelPrint Co is healthy (score 88.9). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-012,BoxCraft Inc is healthy (score 75.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-013,"Silicon Solutions is in CONDITIONAL status (score 67.2). Concerns in capacity; OTD 97.3%, 0 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-014,"Wireless Tech is in CONDITIONAL status (score 61.4). Concerns in quality; OTD 86.0%, 5 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-015,Generic Systems is healthy (score 77.2). No flagged dimensions. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.,Pull-in quality review with supplier; verify corrective action plan before next gate.,HIGH
+MFG-016,"Photon Ltd is in CONDITIONAL status (score 66.4). No single dimension at red, but several are below threshold. OTD 80.9%, 1 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-017,"Ferro Works is in CONDITIONAL status (score 70.2). No single dimension at red, but several are below threshold. OTD 80.3%, 0 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-018,Crystal Components is healthy (score 87.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-019,Quantum Manufacturing is healthy (score 76.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-020,Anchor Group is healthy (score 80.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-021,Vertex Partners is healthy (score 85.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-022,Helix Industries is healthy (score 80.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-023,"Onyx Corp is in CONDITIONAL status (score 54.3). Concerns in delivery; OTD 76.2%, 5 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 5 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-024,Tessera Co is healthy (score 86.7). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-025,Pacific Inc is healthy (score 79.4). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-026,Atlas Solutions is healthy (score 76.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-027,"Volta Tech is in CONDITIONAL status (score 73.6). No single dimension at red, but several are below threshold. OTD 87.7%, 0 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-028,Nexus Systems is healthy (score 92.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-029,Memex Ltd is healthy (score 92.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-030,Sensorium Works is healthy (score 76.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-031,EastBay Components is healthy (score 82.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-032,Precision Manufacturing is healthy (score 88.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-033,"DisplayWorks Group is in CONDITIONAL status (score 53.4). Concerns in quality, capacity; OTD 84.4%, 2 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-034,PowerCell Partners is healthy (score 88.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-035,"FormFlex Industries is in CONDITIONAL status (score 59.1). Concerns in delivery; OTD 79.4%, 3 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-036,LabelPrint Corp is healthy (score 89.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-037,BoxCraft Co is healthy (score 93.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-038,Silicon Inc is healthy (score 93.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-039,"Wireless Solutions is in CONDITIONAL status (score 73.4). No single dimension at red, but several are below threshold. OTD 94.3%, 0 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-040,Generic Tech is healthy (score 90.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-041,"Photon Systems is in CONDITIONAL status (score 55.5). Concerns in delivery; OTD 75.5%, 4 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 4 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-042,Ferro Ltd is healthy (score 85.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-043,Crystal Works is healthy (score 78.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-044,"Quantum Components is in CONDITIONAL status (score 71.9). Concerns in capacity; OTD 95.7%, 0 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-045,Anchor Manufacturing is healthy (score 95.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-046,Vertex Group is healthy (score 87.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-047,Helix Partners is healthy (score 82.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-048,Onyx Industries is healthy (score 79.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-049,Tessera Corp is healthy (score 82.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-050,"Pacific Co is in CONDITIONAL status (score 62.0). No single dimension at red, but several are below threshold. OTD 92.1%, 1 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-051,Atlas Inc is healthy (score 84.4). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-052,"Volta Solutions is in CONDITIONAL status (score 57.5). Concerns in financial; OTD 89.5%, 1 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-053,Nexus Tech is healthy (score 84.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-054,"Memex Systems is in CONDITIONAL status (score 61.1). Concerns in quality, financial; OTD 85.3%, 5 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-055,Sensorium Ltd is healthy (score 87.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-056,"EastBay Works is in CONDITIONAL status (score 65.4). No single dimension at red, but several are below threshold. OTD 82.9%, 4 escapes in 60d. NOTE: PPAP approved but 4 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-057,Precision Components is healthy (score 87.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-058,DisplayWorks Manufacturing is healthy (score 95.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-059,PowerCell Group is healthy (score 78.4). No flagged dimensions. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.,Pull-in quality review with supplier; verify corrective action plan before next gate.,HIGH
+MFG-060,FormFlex Partners is healthy (score 80.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-061,"LabelPrint Industries is in CONDITIONAL status (score 70.8). Concerns in quality; OTD 94.3%, 2 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-062,"BoxCraft Corp is at HIGH risk (score 41.3). Driven by weakness in quality, capacity, financial, with OTD at 86.5% and 2 quality escapes in last 60 days.",Escalate to weekly supply review; on-site visit recommended within 2 weeks.,HIGH
+MFG-063,Silicon Co is healthy (score 75.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-064,Wireless Inc is healthy (score 79.7). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-065,Generic Solutions is healthy (score 81.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-066,Photon Tech is healthy (score 82.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-067,Ferro Systems is healthy (score 81.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-068,"Crystal Ltd is in CONDITIONAL status (score 64.5). No single dimension at red, but several are below threshold. OTD 83.4%, 5 escapes in 60d. NOTE: PPAP approved but 5 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-069,Quantum Works is healthy (score 97.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-070,"Anchor Components is in CONDITIONAL status (score 67.0). Concerns in delivery; OTD 76.3%, 1 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-071,Vertex Manufacturing is healthy (score 88.7). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-072,Helix Group is healthy (score 79.6). No flagged dimensions. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.,Pull-in quality review with supplier; verify corrective action plan before next gate.,HIGH
+MFG-073,"EastBay Magnetics is in CONDITIONAL status (score 56.2). Concerns in delivery; OTD 78.5%, 4 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 4 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-074,"Tessera Industries is in CONDITIONAL status (score 66.5). Concerns in delivery; OTD 70.8%, 0 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-075,Pacific Corp is healthy (score 82.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-076,"Atlas Co is in CONDITIONAL status (score 66.6). Concerns in financial; OTD 90.1%, 0 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-077,Volta Inc is healthy (score 85.6). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-078,Nexus Solutions is healthy (score 87.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-079,"Memex Tech is at HIGH risk (score 49.5). Driven by weakness in capacity, with OTD at 82.5% and 5 quality escapes in last 60 days. NOTE: PPAP approved but 5 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,HIGH
+MFG-080,Sensorium Systems is healthy (score 84.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-081,EastBay Ltd is healthy (score 75.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-082,Precision Works is healthy (score 94.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-083,DisplayWorks Components is healthy (score 81.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-084,"PowerCell Manufacturing is in CONDITIONAL status (score 55.6). Concerns in delivery, financial; OTD 77.6%, 3 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-085,FormFlex Group is healthy (score 88.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-086,LabelPrint Partners is healthy (score 76.8). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-087,BoxCraft Industries is healthy (score 80.3). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-088,"Silicon Corp is in CONDITIONAL status (score 74.2). Concerns in financial; OTD 91.9%, 3 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-089,Wireless Co is healthy (score 84.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-090,Generic Inc is healthy (score 87.4). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-091,"Photon Solutions is in CONDITIONAL status (score 70.3). Concerns in delivery; OTD 77.5%, 3 escapes in 60d. Worth attention but not immediate escalation. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-092,"Ferro Tech is in CONDITIONAL status (score 73.8). Concerns in capacity; OTD 94.8%, 2 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-093,Crystal Systems is healthy (score 91.2). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-094,Quantum Ltd is healthy (score 78.0). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-095,"Anchor Works is in CONDITIONAL status (score 75.0). No single dimension at red, but several are below threshold. OTD 80.2%, 2 escapes in 60d.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
+MFG-096,Vertex Components is healthy (score 75.1). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-097,Helix Manufacturing is healthy (score 94.5). No flagged dimensions.,Standard quarterly review.,HIGH
+MFG-098,"Onyx Group is in CONDITIONAL status (score 68.6). No single dimension at red, but several are below threshold. OTD 84.8%, 3 escapes in 60d. NOTE: PPAP approved but 3 quality escapes in 60 days; multi-dimensional risk that single-factor checks would miss.",Pull-in quality review with supplier; verify corrective action plan before next gate.,MEDIUM
+MFG-099,"Tessera Partners is in CONDITIONAL status (score 58.4). Concerns in delivery, capacity; OTD 75.9%, 0 escapes in 60d. Worth attention but not immediate escalation.",Monitor in monthly supply review; follow up if any dimension worsens.,MEDIUM
